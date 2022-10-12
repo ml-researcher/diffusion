@@ -48,13 +48,14 @@ if __name__ == '__main__':
         model,
         image_size = 28,
         timesteps = 1000,   # number of steps
-        loss_type = 'l1'    # L1 or L2
+        loss_type = 'l2'    # L1 or L2
     )
     if torch.cuda.is_available():
         diffusion = diffusion.cuda()
     optimizer = optim.Adam(diffusion.parameters())
     os.makedirs('./samples', exist_ok=True)
+    os.makedirs('./models', exist_ok=True)
     for e in range(epoch):
         train_one_epoch(e, diffusion, optimizer)
-        # test_one_epoch(e, model)
         sampling(e, diffusion)
+        torch.save(diffusion, 'models/epoch{}.pt'.format(e))
